@@ -1,5 +1,3 @@
-require('dotenv').config();
-
 const sysUser = {
   user: process.env.SYS_USER,
   pass: process.env.SYS_PASS

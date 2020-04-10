@@ -32,12 +32,13 @@ definitions:
       status:
         type: string
         readOnly: true
+        required: true
         description: "The game status, read-only, the client can not POST or PUT this"
         enum:
-          - RUNNING
-          - X_WON
-          - O_WON
-          - DRAW
+          - "RUNNING"
+          - "X_WON"
+          - "O_WON"
+          - "DRAW"
 
 paths:
   /api/v1/games:
