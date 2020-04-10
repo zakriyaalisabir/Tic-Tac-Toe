@@ -1,6 +1,9 @@
 const { runRawQueriesT } = require('../../utils/repo');
 
-const migrationCommands = ['CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'];
+const migrationCommands = [
+  // 'CREATE SCHEMA ' + process.env.DB_SCHEMA + ';',
+  'CREATE EXTENSION IF NOT EXISTS "uuid-ossp";'
+];
 const rollbackCommands = [];
 
 module.exports = {

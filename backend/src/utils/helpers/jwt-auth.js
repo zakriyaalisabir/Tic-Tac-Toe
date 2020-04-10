@@ -1,16 +1,16 @@
-const debug = require('debug')('app:shared:utils:jwt-auth');
+const debug = require('debug')('backend:src:utils:helpers:jwt-auth');
 
 const jwt = require('jsonwebtoken');
 
 const { UnauthorizedErrorResult, ErrorCode } = require('../errors');
 const { jwtSecret } = require('../config');
 
-const AUDIENCE = 'estore';
+const AUDIENCE = process.env.AUDIENCE || 'tictactoe';
 
 const issueToken = (data) => {
   const token = jwt.sign({ data }, jwtSecret, {
     expiresIn: 60 * 60, //3600 seconds or 1h
-    audience: AUDIENCE,
+    audience: AUDIENCE
   });
 
   debug({ token });

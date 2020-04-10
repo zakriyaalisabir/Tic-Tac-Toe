@@ -1,15 +1,22 @@
-require('dotenv').config({
-  debug: process.env.DEBUG === '*' ? true : false,
-  encoding: 'utf-8'
-});
+require('dotenv').config();
 
-const debug = require('debug')('serverjs');
+const debug = require('debug')('backend:serverjs');
+
+const { sequelize } = require('./src/db/models');
 
 const { Server } = require('./src');
 const PORT = process.env.PORT || 8181;
 
-debug('Initiationg Server.....');
+debug('Syncing DB.....');
 
-Server.listen(PORT, () => {
-  debug(`Server is up on http://localhost:${PORT}`);
-});
+sequelize
+  .sync()
+  .then(() => {
+    debug('Init Server....');
+    Server.listen(PORT, () => {
+      console.log(`Server is up on http://localhost:${PORT}`);
+    });
+  })
+  .catch(() => {
+    debug('DB Sync failed....');
+  });

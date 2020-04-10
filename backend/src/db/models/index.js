@@ -28,6 +28,8 @@ const sequelize = new Sequelize(
   sequelizeExtraParams
 );
 
+const models = {};
+
 // Load all models into db object
 fs.readdirSync(__dirname)
   .filter((file) => {
@@ -37,17 +39,17 @@ fs.readdirSync(__dirname)
   })
   .forEach((file) => {
     const model = sequelize['import'](path.join(__dirname, file));
-    sequelize[_.snakeCase(_.lowerCase(model.name))] = model; // lowercase backup
+    models[_.snakeCase(_.lowerCase(model.name))] = model; // lowercase backup
   });
 
-const keys = Object.keys(sequelize);
+const keys = Object.keys(models);
 keys.forEach((modelName) => {
-  sequelize[_.upperFirst(_.camelCase(modelName))] = sequelize[modelName];
+  models[_.upperFirst(_.camelCase(modelName))] = models[modelName];
 });
 
-Object.keys(sequelize).forEach((modelName) => {
-  if (sequelize[modelName].associate) {
-    sequelize[modelName].associate(sequelize);
+Object.keys(models).forEach((modelName) => {
+  if (models[modelName].associate) {
+    models[modelName].associate(models);
   }
 });
 
@@ -71,10 +73,9 @@ const disconnectDB = async () => {
   return sequelize;
 };
 
-connectDB();
-
 module.exports = {
   connectDB,
   disconnectDB,
-  models: sequelize
+  models,
+  sequelize
 };

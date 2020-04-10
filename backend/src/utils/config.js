@@ -1,7 +1,4 @@
-const sysUser = {
-  user: process.env.SYS_USER,
-  pass: process.env.SYS_PASS
-};
+require('dotenv').config();
 
 const jwtSecret = process.env.SECRET;
 
@@ -21,13 +18,13 @@ const {
 
 const config = {
   username: DB_USER || 'postgres',
-  password: DB_PASS || 'lahore',
+  password: DB_PASS || 'postgres',
   database: DB_NAME || 'postgres',
-  schema: DB_SCHEMA || 'estore',
+  schema: DB_SCHEMA || 'public',
   host: DB_HOST || 'localhost',
   port: DB_PORT || 5432,
   dialect: DB_DIALECT || 'postgres',
-  logging: DB_LOGGING === 'true',
+  logging: DB_LOGGING === false,
   pool: {
     min: DB_POOL_MIN || 0,
     max: parseInt(DB_POOL_MAX) || 1,
@@ -37,7 +34,7 @@ const config = {
 
 module.exports = {
   jwtSecret,
-  sysUser,
+  config,
   development: config,
   test: config,
   production: config

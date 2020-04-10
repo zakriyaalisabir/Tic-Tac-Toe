@@ -1,4 +1,4 @@
-const debug = require('debug')('src:utils:helpers:bcryptjs');
+const debug = require('debug')('backend:src:utils:helpers:bcryptjs');
 
 const bcrypt = require('bcryptjs');
 
