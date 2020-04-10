@@ -6,7 +6,7 @@ APP:=	tictactoe
 REVISION:=	$(shell	git	rev-parse	--short	HEAD)
 SCHEMA:=	${APP}
 ORIGIN:=	backend
-TIMESTAMP := $(shell /bin/date "+%Y/%m/%d %H-%M-%S")
+TIMESTAMP := $(shell /bin/date "+%Y/%m/%d %H:%M:%S")
 MSG:=	updated code @ ${TIMESTAMP}
 
 db:
