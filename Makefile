@@ -5,7 +5,6 @@ SHELL:=	/bin/bash
 APP:=	tictactoe
 REVISION:=	$(shell	git	rev-parse	--short	HEAD)
 SCHEMA:=	${APP}
-MODE:=	development
 ORIGIN:=	master
 TIMESTAMP := $(shell /bin/date "+%Y/%m/%d %H-%M-%S")
 MSG:=	updated code @ ${TIMESTAMP}
@@ -13,8 +12,8 @@ MSG:=	updated code @ ${TIMESTAMP}
 .PHONY:	init
 
 init:
-	mkdir	src_handlers/temp
-	cp	".env.sample"	".env"
+	cp	".env.sample"	"./backend/.env"
+	cp	".env.sample"	"./frontend/.env"
 
 install:
 	cd	backend/
