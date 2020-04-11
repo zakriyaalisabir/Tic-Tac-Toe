@@ -32,7 +32,6 @@ definitions:
       status:
         type: string
         readOnly: true
-        required: true
         description: "The game status, read-only, the client can not POST or PUT this"
         enum:
           - "RUNNING"
