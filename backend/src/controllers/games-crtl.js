@@ -1,6 +1,7 @@
+const debug = require('debug')('backend:src:ctrl:game');
+
 class GamesController {
   constructor() {}
-
   static getAllGames(req, res, next) {
     res.send('this.getAllGames');
     next();
@@ -31,5 +32,7 @@ class GamesController {
     next();
   }
 }
+
+debug('Game Ctrl Init.....');
 
 module.exports = { GamesController };

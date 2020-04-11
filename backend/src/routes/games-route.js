@@ -1,4 +1,4 @@
-const debug = require('debug')('backend:src:routes:board');
+const debug = require('debug')('backend:src:routes:game');
 
 const { Router } = require('express');
 

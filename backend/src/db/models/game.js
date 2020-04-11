@@ -13,7 +13,7 @@ module.exports = (sequelize, DataTypes) => {
     },
     {}
   );
-  Game.associate = function (models) {
+  Game.associate = (models) => {
     // associations can be defined here
   };
   return Game;
