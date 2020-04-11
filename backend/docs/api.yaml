@@ -8,7 +8,7 @@ produces:
 info:
   version: "1.0.0"
   title: "Tic-tac-toe"
-  description: "for visual understanding of API's goto https://editor.swagger.io/"
+  description: "For visual understanding of API's goto https://editor.swagger.io/"
 
 schemes:
   - https
