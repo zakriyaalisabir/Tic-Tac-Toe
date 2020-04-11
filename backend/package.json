@@ -10,7 +10,7 @@
     "db:undo": "./node_modules/.bin/sequelize db:migrate:undo",
     "db:undo:all": "./node_modules/.bin/sequelize db:migrate:undo:all",
     "debug": "npm run prestart && DEBUG=backend:* node server.js",
-    "init": "cp ../.env.sample .env && rm -r ./build",
+    "init": "cp ../.env.sample .env",
     "lint": "./node_modules/.bin/eslint .",
     "lint:fix": "./node_modules/.bin/eslint . --fix",
     "pretest": "npm run lint",

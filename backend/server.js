@@ -14,7 +14,7 @@ sequelize
   .then(() => {
     debug('Init Server....');
     Server.listen(PORT, () => {
-      console.log(`Server is up on http://localhost:${PORT}`);
+      console.log(`Application TicTacToe is up on http://localhost:${PORT}`);
     });
   })
   .catch(() => {
