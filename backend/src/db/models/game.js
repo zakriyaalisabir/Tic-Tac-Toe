@@ -2,9 +2,14 @@ module.exports = (sequelize, DataTypes) => {
   const Game = sequelize.define(
     'Game',
     {
-      first_name: DataTypes.STRING,
-      last_name: DataTypes.STRING,
-      bio: DataTypes.TEXT
+      board: {
+        type: DataTypes.STRING,
+        required: true
+      },
+      status: {
+        type: DataTypes.ENUM,
+        values: ['RUNNING', 'X_WON', 'O_WON', 'DRAW']
+      }
     },
     {}
   );

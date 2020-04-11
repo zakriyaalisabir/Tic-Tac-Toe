@@ -7,14 +7,14 @@ module.exports = {
         allowNull: false,
         primaryKey: true
       },
-      first_name: {
+      board: {
+        allowNull: false,
         type: Sequelize.STRING
       },
-      last_name: {
-        type: Sequelize.STRING
-      },
-      bio: {
-        type: Sequelize.TEXT
+      status: {
+        allowNull: false,
+        type: Sequelize.ENUM('RUNNING', 'X_WON', 'O_WON', 'DRAW'),
+        defaultValue: 'RUNNING'
       },
       createdAt: {
         allowNull: false,
