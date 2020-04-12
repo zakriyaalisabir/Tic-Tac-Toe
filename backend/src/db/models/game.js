@@ -19,13 +19,13 @@ module.exports = (sequelize, DataTypes) => {
       hooks: {
         beforeSave: (gameObj) => {
           gameObj.status = FindWinner(gameObj.board);
-          debug({ before: gameObj });
+          debug({ beforeSave: gameObj });
         }
       }
     }
   );
   Game.associate = (models) => {
-    // associations can be defined here
+    // TODO : associations can be defined here
   };
   return Game;
 };

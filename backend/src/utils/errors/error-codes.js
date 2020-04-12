@@ -21,8 +21,8 @@ const ErrorCode = {
   AssetNotFound: 'ASSET_NOT_FOUND',
   CategoryMismatch: 'CATEGORY_MISMATCH',
   ItemNotFound: 'ITEM_NOT_FOUND',
-  UnprocessableRequest: 'UNPROCESSABLE_DVIR',
-  UserAlreadyRegistered: 'USER_ALREADY_REGISTERED',
+  UnprocessableRequest: 'UNPROCESSABLE_REQUEST',
+  UserAlreadyRegistered: 'USER_ALREADY_REGISTERED'
 };
 
 module.exports = { ErrorCode };

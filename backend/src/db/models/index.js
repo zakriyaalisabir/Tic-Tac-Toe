@@ -54,6 +54,7 @@ Object.keys(sequelize).forEach((modelName) => {
 if (!global.connection) {
   global.connection = {};
 }
+
 const connectDB = async () => {
   if (global.connection.isConnected) {
     // console.log('=> Using existing connection.');

@@ -1,6 +1,6 @@
 require('dotenv').config();
 
-const debug = require('debug')('backend:serverjs');
+const debug = require('debug')('backend:server');
 
 const { models } = require('./src/db/models');
 
