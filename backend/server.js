@@ -2,14 +2,14 @@ require('dotenv').config();
 
 const debug = require('debug')('backend:serverjs');
 
-const { sequelize } = require('./src/db/models');
+const { models } = require('./src/db/models');
 
 const { Server } = require('./src');
 const PORT = process.env.PORT || 8181;
 
 debug('Syncing DB.....');
 
-sequelize
+models
   .sync()
   .then(() => {
     debug('Init Server....');

@@ -6,8 +6,9 @@ produces:
   - "application/json"
 
 info:
-  version: "1.0.1"
+  version: "1.0.0"
   title: "Tic-tac-toe"
+  description: "For visual understanding of API's goto https://editor.swagger.io/"
 
 schemes:
   - https
@@ -32,7 +33,6 @@ definitions:
       status:
         type: string
         readOnly: true
-        required: true
         description: "The game status, read-only, the client can not POST or PUT this"
         enum:
           - "RUNNING"
@@ -79,7 +79,7 @@ paths:
             properties:
               location:
                 type: string
-                description: U"RL of the started game"
+                description: "URL of the started game"
         400:
           description: "Bad request"
           schema:
