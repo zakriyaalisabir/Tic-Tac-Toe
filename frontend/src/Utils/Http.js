@@ -1,5 +1,8 @@
 const axios = require('axios');
-const { BadRequestResult, ErrorCode } = require('../../../../backend/src/utils/errors');
+const {
+  BadRequestResult,
+  ErrorCode
+} = require('../../../backend/src/utils/errors');
 
 class Http {
   static async get(url, options) {
@@ -9,8 +12,13 @@ class Http {
   static async post(url, data, options) {
     return this._axiosRequest({ method: 'post', url, data, options });
   }
+
   static async patch(url, data, options) {
     return this._axiosRequest({ method: 'patch', url, data, options });
+  }
+
+  static async put(url, data, options) {
+    return this._axiosRequest({ method: 'put', url, data, options });
   }
 
   static async update(url, data, options) {
@@ -32,7 +40,4 @@ class Http {
   }
 }
 
-module.exports = {
-  Http,
-  ...require('./http-status-codes'),
-};
+export { Http };
