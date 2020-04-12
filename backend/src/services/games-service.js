@@ -141,10 +141,6 @@ class GameService {
     }
   }
 
-  static async patch(obj) {
-    return obj;
-  }
-
   static async delete(obj) {
     return obj;
   }

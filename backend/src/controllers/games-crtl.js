@@ -47,11 +47,6 @@ class GamesController {
     }
   }
 
-  static async patchGame(req, res, next) {
-    res.send('this.patchGame');
-    next();
-  }
-
   static async deleteGame(req, res, next) {
     res.send('this.deleteGame');
     next();
