@@ -1,75 +1,99 @@
 import React from 'react';
 import Board from './Board';
 
-// import B
+import { URL, Http, squaresArrToStr } from '../Utils';
 
-function calculateWinner(squares) {
-  const lines = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6]
-  ];
-  for (let i = 0; i < lines.length; i++) {
-    const [a, b, c] = lines[i];
-    if (squares[a] && squares[a] === squares[b] && squares[a] === squares[c]) {
-      return squares[a];
-    }
-  }
-  return null;
-}
+const initialGameStatus = 'RUNNING';
+const initialGameBoard = '---------';
 
 class Game extends React.Component {
   constructor() {
     super();
-    
+
+    this.game_id = null;
+
     this.state = {
+      board: initialGameBoard,
       game_id: null,
-      status: 'RUNNING',
-      history: [
-        {
-          squares: Array(9).fill(null)
-        }
-      ],
-      xIsNext: true,
-      stepNumber: 0
+      status: initialGameStatus,
+      squares: Array(9).fill(null),
+      stepNumber: 0,
+      msg: 'Start New Game Now'
     };
   }
 
-  jumpTo(step) {
-    this.setState({
-      stepNumber: step,
-      xIsNext: step % 2 ? false : true
-    });
-  }
+  componentDidMount = async () => {
+    await this.init();
+  };
 
-  handleClick(i) {
-    const history = this.state.history.slice(0, this.state.stepNumber + 1);
-    const current = history[history.length - 1];
-    const squares = current.squares.slice();
+  init = async () => {
+    try {
+      const {
+        result: { id }
+      } = await Http.post(URL, { board: this.state.board });
 
-    if (calculateWinner(squares) || squares[i]) {
-      return;
+      console.log({ game_id: id });
+
+      this.game_id = id;
+
+      this.setState({ game_id: id });
+    } catch (error) {
+      console.log(error);
     }
+  };
 
-    squares[i] = this.state.xIsNext ? 'X' : 'O';
+  updateBoard = async (squares) => {
+    const strSquares = squaresArrToStr(squares);
 
-    //make api call here
+    console.log({ strSquares });
 
-    const newSquares = this.cpuMove(squares);
+    try {
+      const {
+        result: { status }
+      } = await Http.put(`${URL}/${this.state.game_id}`, {
+        board: strSquares
+      });
 
+      if (status !== initialGameStatus) {
+        console.clear();
+      }
+
+      this.setState({ status, stepNumber: this.state.stepNumber++ });
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  newGame = () => {
+    console.clear();
     this.setState({
-      history: history.concat([{ squares: newSquares }]),
-      xIsNext: !this.state.xIsNext,
-      stepNumber: history.length
+      board: initialGameBoard,
+      status: initialGameStatus,
+      squares: Array(9).fill(null),
+      stepNumber: 0
     });
-  }
+  };
 
-  cpuMove(squares) {
+  handleClick = (i) => {
+    if (this.state.status === initialGameStatus) {
+      const marker = this.state.stepNumber % 2 === 0 ? 'X' : 'O';
+      const squares = this.state.squares;
+      squares[i] = marker;
+
+      this.setState({ squares }, async () => {
+        //make api call here for move update
+        await this.updateBoard(this.state.squares);
+
+        const newSquares = await this.cpuMove(this.state.squares);
+
+        this.setState({
+          squares: newSquares
+        });
+      });
+    }
+  };
+
+  cpuMove = async (squares) => {
     const emptySquares = [];
     squares.map((obj, idx) => {
       if (obj === null) {
@@ -82,61 +106,41 @@ class Game extends React.Component {
 
     console.log('before', squares);
 
-    const max = emptySquares[0];
-    const min = emptySquares[emptySquares.length - 1];
-    const cpuMove = Math.floor(Math.random() * (max - min)) + min;
+    const cpuMovePos =
+      emptySquares[Math.floor(Math.random() * emptySquares.length)];
 
-    console.log({ max, min, cpuMove });
+    console.log({ cpuMovePos });
 
-    squares[cpuMove] = this.state.xIsNext ? 'O' : 'X';
+    squares[cpuMovePos] = this.state.stepNumber % 2 === 0 ? 'O' : 'X';
 
-    //make api call here
+    //make api call here for move update
+    await this.updateBoard(squares);
 
     console.log('after', squares);
 
     return squares;
-  }
+  };
 
-  render() {
-    const history = this.state.history;
-    const current = history[this.state.stepNumber];
-    const winner = calculateWinner(current.squares);
-
-    let status;
-    if (winner) {
-      status = winner + '_WINS';
-      console.clear();
-    }
-    const moves = history.map((step, move) => {
-      const desc = move ? 'Move #' + move : 'Start New Game';
-      return (
-        <li key={move}>
-          {
-            // eslint-disable-next-line
-            <a href="#" onClick={() => this.jumpTo(move)}>
-              {desc}
-            </a>
-          }
-        </li>
-      );
-    });
-
+  render = () => {
     return (
       <div className="game">
         <div className="game-board">
           <Board
-            squares={current.squares}
+            squares={this.state.squares}
             onClick={(i) => this.handleClick(i)}
           />
         </div>
         <div className="game-info">
-          <strong>X= You and O = CPU</strong>
-          <div>{status}</div>
-          <ul>{moves}</ul>
+          <h6>Game Id : {this.state.game_id}</h6>
+          <strong>X = You and O = CPU</strong>
+          <div>Game Status : {this.state.status}</div>
+          <button onClick={() => this.newGame()}>New Game</button>
+          <br />
+          {this.state.status !== initialGameStatus ? this.state.msg : null}
         </div>
       </div>
     );
-  }
+  };
 }
 
 export default Game;
