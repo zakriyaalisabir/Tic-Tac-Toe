@@ -14,7 +14,7 @@
     "lint": "./node_modules/.bin/eslint .",
     "lint:fix": "./node_modules/.bin/eslint . --fix",
     "pretest": "npm run lint",
-    "prestart": "npm run init && npm run build",
+    "prestart": "npm i && npm run init && npm run build",
     "reset": "npm run db:undo",
     "reset:hard": "npm run db:undo:all",
     "setup": "npm run init && npm run db:migrate",
