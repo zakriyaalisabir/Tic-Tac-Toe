@@ -5,7 +5,7 @@ SHELL:=	/bin/bash
 APP:=	tictactoe
 REVISION:=	$(shell	git	rev-parse	--short	HEAD)
 SCHEMA:=	${APP}
-ORIGIN:=	backend
+ORIGIN:=	dev
 TIMESTAMP := $(shell /bin/date "+%Y/%m/%d %H:%M:%S")
 MSG:=	updated code @ ${TIMESTAMP}
 
@@ -20,10 +20,10 @@ postgres.install:
 postgres.createdb:
 	@echo	"DB init....."
 	sudo	su	-	postgres	-c	"psql	-c	'SELECT * FROM pg_database WHERE datname = "${APP}"'"
-	# CREATE	DATABASE	${APP};
-	# psql
-	# \connect	${APP}
-	# CREATE	SCHEMA	${APP};
+	CREATE	DATABASE	${APP};
+	psql
+	\connect	${APP}
+	CREATE	SCHEMA	${APP};
 	\q
 	exit
 
