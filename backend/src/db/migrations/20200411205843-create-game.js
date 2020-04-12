@@ -12,7 +12,7 @@ module.exports = {
         type: Sequelize.STRING
       },
       status: {
-        allowNull: false,
+        allowNull: true,
         type: Sequelize.ENUM('RUNNING', 'X_WON', 'O_WON', 'DRAW'),
         defaultValue: 'RUNNING'
       },
