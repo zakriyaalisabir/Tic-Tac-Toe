@@ -185,7 +185,13 @@ class ResponseBuilder {
    * @returns { response : object <any>  || [objects <any>] }
    */
   static show(res, data, statusCode, isError = false) {
-    res.status(statusCode).send(!isError ? { result: data } : { error: data });
+    res
+      .status(statusCode)
+      .send(
+        !isError
+          ? { result: statusCode === HttpStatusCode.NoContent ? null : data }
+          : { error: data }
+      );
   }
 }
 

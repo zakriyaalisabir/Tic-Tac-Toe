@@ -25,4 +25,4 @@ const ErrorCode = {
   UserAlreadyRegistered: 'USER_ALREADY_REGISTERED'
 };
 
-module.exports = { ErrorCode };
+export { ErrorCode };

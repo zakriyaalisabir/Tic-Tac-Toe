@@ -15,12 +15,29 @@ const {
 } = require('../utils/errors');
 const { createTransaction } = require('../utils/repo');
 const { GameRepository } = require('../repositories');
+const { FindWinner } = require('../utils/helpers/find-game-winner');
 
 const repo = new GameRepository(Game);
 
 class GameService {
   static async getList() {
-    return ['list'];
+    try {
+      const res = await repo.list();
+      return res;
+    } catch (error) {
+      if (
+        error instanceof BadRequestResult ||
+        error instanceof ForbiddenErrorResult ||
+        error instanceof UnprocessableEntityResult ||
+        error instanceof InternalServerErrorResult
+      ) {
+        throw error;
+      }
+      throw new GeneralErrorResult(
+        ErrorCode.GeneralError,
+        'Error While fetching all Games'
+      );
+    }
   }
 
   static async post(data) {
@@ -31,7 +48,7 @@ class GameService {
       if (isEmpty(res)) {
         throw new UnprocessableEntityResult(
           ErrorCode.UnprocessableEntityResult,
-          'Unable to POst Game Move'
+          'Unable to POst Game Obj'
         );
       }
       await transaction.commit();
@@ -48,7 +65,7 @@ class GameService {
       }
       throw new GeneralErrorResult(
         ErrorCode.GeneralError,
-        'Error While Posting a Game Move'
+        'Error While Posting a Game Obj'
       );
     }
   }
@@ -56,9 +73,9 @@ class GameService {
   static async exists(id) {
     try {
       const res = await repo.exists(id);
-      if (isEmpty(res)) {
+      if (!res) {
         throw new UnprocessableEntityResult(
-          ErrorCode.UnprocessableEntityResult,
+          ErrorCode.UnprocessableRequest,
           `No Game Obj exists with the provided Id ${id}`
         );
       }
@@ -74,26 +91,23 @@ class GameService {
       }
       throw new GeneralErrorResult(
         ErrorCode.GeneralError,
-        'Error While Updating a Game Move'
+        'Error While Fetching a Game Obj'
       );
     }
   }
 
-  static async getOne(data) {
-    let transaction;
+  static async getOne(id) {
     try {
-      transaction = await createTransaction();
-      const res = await repo.get({ ...data }, transaction);
+      await GameService.exists(id);
+      const res = await repo.get(id);
       if (isEmpty(res)) {
         throw new UnprocessableEntityResult(
           ErrorCode.UnprocessableEntityResult,
-          'Unable to Update Game Move'
+          'Unable to Get Game Obj'
         );
       }
-      await transaction.commit();
       return res;
     } catch (error) {
-      if (transaction) await transaction.rollback();
       if (
         error instanceof BadRequestResult ||
         error instanceof ForbiddenErrorResult ||
@@ -104,27 +118,30 @@ class GameService {
       }
       throw new GeneralErrorResult(
         ErrorCode.GeneralError,
-        'Error While Updating a Game Move'
+        'Error While fetching a Game Obj'
       );
     }
   }
 
-  static async put(id, data) {
+  static async put(id, { board }) {
     let transaction;
     try {
       await GameService.exists(id);
       transaction = await createTransaction();
-      const res = await repo.update({ ...data }, transaction);
+      const res = await repo.update(
+        { board, id, status: FindWinner(board) },
+        transaction
+      );
       if (isEmpty(res)) {
         throw new UnprocessableEntityResult(
           ErrorCode.UnprocessableEntityResult,
-          'Unable to Update Game Move'
+          'Unable to Update Game Obj'
         );
       }
       await transaction.commit();
       return res;
     } catch (error) {
-      console.log(error);
+      debug({ error });
       if (transaction) await transaction.rollback();
       if (
         error instanceof BadRequestResult ||
@@ -136,17 +153,35 @@ class GameService {
       }
       throw new GeneralErrorResult(
         ErrorCode.GeneralError,
-        'Error While Updating a Game Move'
+        'Error While Updating a Game Obj'
       );
     }
   }
 
-  static async patch(obj) {
-    return obj;
-  }
-
-  static async delete(obj) {
-    return obj;
+  static async delete(id) {
+    let transaction;
+    try {
+      await GameService.exists(id);
+      transaction = await createTransaction();
+      await repo.delete(id, transaction);
+      await transaction.commit();
+      return true;
+    } catch (error) {
+      debug({ error });
+      if (transaction) await transaction.rollback();
+      if (
+        error instanceof BadRequestResult ||
+        error instanceof ForbiddenErrorResult ||
+        error instanceof UnprocessableEntityResult ||
+        error instanceof InternalServerErrorResult
+      ) {
+        throw error;
+      }
+      throw new GeneralErrorResult(
+        ErrorCode.GeneralError,
+        'Error While Deleting a Game Obj'
+      );
+    }
   }
 }
 

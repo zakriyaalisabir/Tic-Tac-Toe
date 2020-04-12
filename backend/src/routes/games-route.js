@@ -12,7 +12,6 @@ router.get('/', GamesController.getAllGames);
 router.post('/', GamesController.postGame);
 router.get('/:game_id', GamesController.getGame);
 router.put('/:game_id', GamesController.putGame);
-router.patch('/:game_id', GamesController.patchGame);
 router.delete('/:game_id', GamesController.deleteGame);
 
 module.exports = {

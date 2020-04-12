@@ -1,6 +1,13 @@
 const GetGameStatus = (gameArr, gameStatus) => {
-  const allMovesDone = gameArr.map((move) => (move === '-' ? false : true));
-  return allMovesDone ? 'DRAW' : gameStatus;
+  const allMovesLen = [...new Set(gameArr)].length;
+
+  if (allMovesLen === 1 || allMovesLen === 3) {
+    return gameStatus;
+  }
+
+  if (allMovesLen === 2) {
+    return 'DRAW';
+  }
 };
 
 const GameStrToArray = (boardState) => {
@@ -31,7 +38,7 @@ const FindWinner = (boardState) => {
         : GetGameStatus(gameArr, gameStatus);
     }
   }
-  return gameStatus;
+  return GetGameStatus(gameArr, gameStatus);
 };
 
 module.exports = { FindWinner };
