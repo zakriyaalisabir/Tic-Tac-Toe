@@ -32,8 +32,6 @@ class Game extends React.Component {
         result: { id }
       } = await Http.post(URL, { board: this.state.board });
 
-      console.log({ game_id: id });
-
       this.game_id = id;
 
       this.setState({ game_id: id });
@@ -44,8 +42,6 @@ class Game extends React.Component {
 
   updateBoard = async (squares) => {
     const strSquares = squaresArrToStr(squares);
-
-    console.log({ strSquares });
 
     try {
       const {
@@ -102,21 +98,13 @@ class Game extends React.Component {
       return obj;
     });
 
-    console.log({ emptySquares });
-
-    console.log('before', squares);
-
     const cpuMovePos =
       emptySquares[Math.floor(Math.random() * emptySquares.length)];
-
-    console.log({ cpuMovePos });
 
     squares[cpuMovePos] = this.state.stepNumber % 2 === 0 ? 'O' : 'X';
 
     //make api call here for move update
     await this.updateBoard(squares);
-
-    console.log('after', squares);
 
     return squares;
   };
