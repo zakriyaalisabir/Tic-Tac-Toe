@@ -12,15 +12,14 @@ class GamesController {
     next();
   }
 
-  static async postGame(req, res, next) {
+  static async postGame({ body }, res, next) {
     try {
-      debug(req.body);
-      const result = await GameService.post(req.body);
+      debug({ body });
+      const result = await GameService.post(body);
       debug({ result });
       ResponseBuilder.show(res, result, HttpStatusCode.Ok);
     } catch (error) {
-      const { body, statusCode } = ResponseBuilder.error(error);
-      res.status(statusCode).send(body);
+      ResponseBuilder.error(res, error);
     } finally {
       next();
     }
@@ -32,8 +31,20 @@ class GamesController {
   }
 
   static async putGame(req, res, next) {
-    res.send(ResponseBuilder.ok('this.putGame'));
-    next();
+    try {
+      const {
+        params: { game_id: id },
+        body
+      } = req;
+      debug({ id, body });
+      const result = await GameService.put(body);
+      debug({ result });
+      ResponseBuilder.show(res, result, HttpStatusCode.Ok);
+    } catch (error) {
+      ResponseBuilder.error(res, error);
+    } finally {
+      next();
+    }
   }
 
   static async patchGame(req, res, next) {

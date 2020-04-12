@@ -8,10 +8,10 @@ class SharedRepository {
     this._model = model;
   }
 
-  async exists(email) {
+  async exists(id) {
     const data = await this._model.findOne({
-      where: { email },
-      attributes: ['email'],
+      where: { id },
+      attributes: ['id'],
       raw: true,
     });
 
@@ -38,9 +38,9 @@ class SharedRepository {
     }
   }
 
-  async get(email, options) {
+  async get(id, options) {
     return this._shallowCopy(
-      await this._model.findOne({ where: { email }, ...options })
+      await this._model.findOne({ where: { id }, ...options })
     );
   }
 
@@ -54,8 +54,8 @@ class SharedRepository {
     return data;
   }
 
-  async delete(email, transaction) {
-    return this._model.destroy({ where: { email }, transaction });
+  async delete(id, transaction) {
+    return this._model.destroy({ where: { id }, transaction });
   }
 
   async deleteMultiple(where = {}, options = {}) {
@@ -63,12 +63,12 @@ class SharedRepository {
   }
 
   async update(data, transaction) {
-    if (data.email === undefined) {
+    if (data.id === undefined) {
       throw new TypeError('Primary key property `id` must be specified');
     }
 
     const [, updated] = await this._model.update(data, {
-      where: { email: data.email },
+      where: { id: data.id },
       returning: true,
       raw: true,
       transaction,
@@ -79,7 +79,7 @@ class SharedRepository {
       // that actually exist (and also performing the necessary authorization
       // checks), so any manifestations of this error should be considered to
       // be implementation errors. Might need a better exception class though.
-      throw new Error(`Entity does not exist: ${data.email}`);
+      throw new Error(`Entity does not exist: ${data.id}`);
     }
 
     return updated[0];

@@ -174,8 +174,9 @@ class ResponseBuilder {
    * @returns { response : object <any>  || [objects <any>] }
    */
   static error(res, error) {
+    debug({ error });
     const { statusCode, body } = ResponseBuilder.translateError(error);
-    return this.show(res, body, statusCode);
+    this.show(res, body, statusCode, true);
   }
 
   /**
@@ -183,8 +184,8 @@ class ResponseBuilder {
    * @param { res: expressjs response object, data: any, statusCode: Number}
    * @returns { response : object <any>  || [objects <any>] }
    */
-  static show(res, data, statusCode) {
-    return res.status(statusCode).send({ result: data });
+  static show(res, data, statusCode, isError = false) {
+    res.status(statusCode).send(!isError ? { result: data } : { error: data });
   }
 }
 

@@ -1,38 +1,48 @@
 const debug = require('debug')('backend:src:service:game');
 
-const { models: Game } = require('../db/models');
+const { isEmpty } = require('lodash');
+
+const {
+  models: { Game }
+} = require('../db/models');
 const {
   BadRequestResult,
   ForbiddenErrorResult,
   GeneralErrorResult,
   UnprocessableEntityResult,
+  InternalServerErrorResult,
   ErrorCode
 } = require('../utils/errors');
 const { createTransaction } = require('../utils/repo');
 const { GameRepository } = require('../repositories');
 
-class GameService {
-  constructor() {
-    this.repo = new GameRepository(Game);
-  }
+const repo = new GameRepository(Game);
 
+class GameService {
   static async getList() {
     return ['list'];
   }
 
-  static async post(obj) {
+  static async post(data) {
     let transaction;
     try {
-      const data = {...obj,};
       transaction = await createTransaction();
-      // const res = this.repo.create(data, transaction);
-      // await transaction.commit();
-      return data;
+      const res = await repo.create({ ...data }, transaction);
+      if (isEmpty(res)) {
+        throw new UnprocessableEntityResult(
+          ErrorCode.UnprocessableEntityResult,
+          'Unable to POst Game Move'
+        );
+      }
+      await transaction.commit();
+      return res;
     } catch (error) {
       if (transaction) await transaction.rollback();
       if (
         error instanceof BadRequestResult ||
-        error instanceof ForbiddenErrorResult
+        error instanceof ForbiddenErrorResult ||
+        error instanceof UnprocessableEntityResult ||
+        error instanceof InternalServerErrorResult
       ) {
         throw error;
       }
@@ -43,12 +53,92 @@ class GameService {
     }
   }
 
-  static async getOne(obj) {
-    return obj;
+  static async exists(id) {
+    try {
+      const res = await repo.exists(id);
+      if (isEmpty(res)) {
+        throw new UnprocessableEntityResult(
+          ErrorCode.UnprocessableEntityResult,
+          `No Game Obj exists with the provided Id ${id}`
+        );
+      }
+      return res;
+    } catch (error) {
+      if (
+        error instanceof BadRequestResult ||
+        error instanceof ForbiddenErrorResult ||
+        error instanceof UnprocessableEntityResult ||
+        error instanceof InternalServerErrorResult
+      ) {
+        throw error;
+      }
+      throw new GeneralErrorResult(
+        ErrorCode.GeneralError,
+        'Error While Updating a Game Move'
+      );
+    }
   }
 
-  static async put(obj) {
-    return obj;
+  static async getOne(data) {
+    let transaction;
+    try {
+      transaction = await createTransaction();
+      const res = await repo.get({ ...data }, transaction);
+      if (isEmpty(res)) {
+        throw new UnprocessableEntityResult(
+          ErrorCode.UnprocessableEntityResult,
+          'Unable to Update Game Move'
+        );
+      }
+      await transaction.commit();
+      return res;
+    } catch (error) {
+      if (transaction) await transaction.rollback();
+      if (
+        error instanceof BadRequestResult ||
+        error instanceof ForbiddenErrorResult ||
+        error instanceof UnprocessableEntityResult ||
+        error instanceof InternalServerErrorResult
+      ) {
+        throw error;
+      }
+      throw new GeneralErrorResult(
+        ErrorCode.GeneralError,
+        'Error While Updating a Game Move'
+      );
+    }
+  }
+
+  static async put(id, data) {
+    let transaction;
+    try {
+      await GameService.exists(id);
+      transaction = await createTransaction();
+      const res = await repo.update({ ...data }, transaction);
+      if (isEmpty(res)) {
+        throw new UnprocessableEntityResult(
+          ErrorCode.UnprocessableEntityResult,
+          'Unable to Update Game Move'
+        );
+      }
+      await transaction.commit();
+      return res;
+    } catch (error) {
+      console.log(error);
+      if (transaction) await transaction.rollback();
+      if (
+        error instanceof BadRequestResult ||
+        error instanceof ForbiddenErrorResult ||
+        error instanceof UnprocessableEntityResult ||
+        error instanceof InternalServerErrorResult
+      ) {
+        throw error;
+      }
+      throw new GeneralErrorResult(
+        ErrorCode.GeneralError,
+        'Error While Updating a Game Move'
+      );
+    }
   }
 
   static async patch(obj) {
